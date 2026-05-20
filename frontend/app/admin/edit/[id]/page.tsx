@@ -1,14 +1,18 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
+
+import { useParams } from "next/navigation"
 
 import axios from "axios"
 
-import API from "../../services/api"
+import API from "../../../../services/api"
 
 import toast from "react-hot-toast"
 
-export default function AdminPage() {
+export default function EditProductPage() {
+
+  const params = useParams()
 
   const [name, setName] = useState("")
 
@@ -23,6 +27,42 @@ export default function AdminPage() {
   const [imageUrl, setImageUrl] = useState("")
 
   const [uploading, setUploading] = useState(false)
+
+  useEffect(() => {
+
+    fetchProduct()
+
+  }, [])
+
+  const fetchProduct = async () => {
+
+    try {
+
+      const response = await API.get(
+        `/products/${params.id}`
+      )
+
+      const product = response.data
+
+      setName(product.name)
+
+      setDescription(product.description)
+
+      setPrice(product.price)
+
+      setStock(product.stock)
+
+      setCategory(product.category)
+
+      setImageUrl(product.image_url)
+
+    } catch (error) {
+
+      console.log(error)
+
+      toast.error("Failed to load product")
+    }
+  }
 
   const uploadImage = async (
     e: any
@@ -60,7 +100,7 @@ export default function AdminPage() {
 
       console.log(error)
 
-      toast.error("Image upload failed")
+      toast.error("Upload failed")
 
     } finally {
 
@@ -68,18 +108,11 @@ export default function AdminPage() {
     }
   }
 
-  const createProduct = async () => {
-
-    if (!imageUrl) {
-
-      toast.error("Please upload an image first")
-
-      return
-    }
+  const updateProduct = async () => {
 
     try {
 
-      await API.post("/products/", {
+      await API.put(`/products/${params.id}`, {
 
         name,
         description,
@@ -90,20 +123,13 @@ export default function AdminPage() {
 
       })
 
-      toast.success("Product created!")
-
-      setName("")
-      setDescription("")
-      setPrice("")
-      setStock("")
-      setCategory("")
-      setImageUrl("")
+      toast.success("Product updated!")
 
     } catch (error) {
 
       console.log(error)
 
-      toast.error("Failed to create product")
+      toast.error("Update failed")
     }
   }
 
@@ -112,46 +138,46 @@ export default function AdminPage() {
     <div className="p-10 max-w-xl">
 
       <h1 className="text-4xl font-bold mb-8">
-        Admin Dashboard
+        Edit Product
       </h1>
 
       <div className="flex flex-col gap-4">
 
         <input
-          placeholder="Product Name"
           value={name}
-          className="border p-3 rounded"
           onChange={(e) => setName(e.target.value)}
+          className="border p-3 rounded"
+          placeholder="Product Name"
         />
 
         <textarea
-          placeholder="Description"
           value={description}
-          className="border p-3 rounded"
           onChange={(e) =>
             setDescription(e.target.value)
           }
+          className="border p-3 rounded"
+          placeholder="Description"
         />
 
         <input
-          placeholder="Price"
           value={price}
-          className="border p-3 rounded"
           onChange={(e) => setPrice(e.target.value)}
+          className="border p-3 rounded"
+          placeholder="Price"
         />
 
         <input
-          placeholder="Stock"
           value={stock}
-          className="border p-3 rounded"
           onChange={(e) => setStock(e.target.value)}
+          className="border p-3 rounded"
+          placeholder="Stock"
         />
 
         <input
-          placeholder="Category"
           value={category}
-          className="border p-3 rounded"
           onChange={(e) => setCategory(e.target.value)}
+          className="border p-3 rounded"
+          placeholder="Category"
         />
 
         <input
@@ -176,10 +202,10 @@ export default function AdminPage() {
         )}
 
         <button
-          onClick={createProduct}
+          onClick={updateProduct}
           className="bg-black text-white p-3 rounded hover:bg-gray-800 transition"
         >
-          Create Product
+          Update Product
         </button>
 
       </div>

@@ -42,6 +42,9 @@ export default function Navbar() {
         <button onClick={logout}>
           Logout
         </button>
+        <Link href="/admin/products">
+          Manage Products
+        </Link>
 
       </div>
 

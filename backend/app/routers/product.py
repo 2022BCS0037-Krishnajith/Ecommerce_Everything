@@ -8,6 +8,8 @@ from app.schemas.product import (
     ProductResponse
 )
 from app.auth.admin import admin_only
+from app.models.cart import Cart
+from app.models.order_item import OrderItem
 
 router = APIRouter(
     prefix="/products",
@@ -61,3 +63,73 @@ def get_product(
         )
 
     return product
+
+@router.delete("/{product_id}")
+def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(admin_only)
+):
+
+    product = db.query(Product).filter(
+        Product.id == product_id
+    ).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+
+    order_items = db.query(OrderItem).filter(
+        OrderItem.product_id == product_id
+    ).all()
+
+    for item in order_items:
+        db.delete(item)
+
+    cart_items = db.query(Cart).filter(
+        Cart.product_id == product_id
+    ).all()
+
+    for item in cart_items:
+        db.delete(item)
+
+    db.delete(product)
+
+    db.commit()
+
+    return {
+        "message": "Product deleted"
+    }
+
+@router.put("/{product_id}")
+def update_product(
+    product_id: int,
+    request: ProductCreate,
+    db: Session = Depends(get_db),
+    admin=Depends(admin_only)
+):
+
+    product = db.query(Product).filter(
+        Product.id == product_id
+    ).first()
+
+    if not product:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+
+    product.name = request.name
+    product.description = request.description
+    product.price = request.price
+    product.stock = request.stock
+    product.category = request.category
+    product.image_url = request.image_url
+
+    db.commit()
+
+    return {
+        "message": "Product updated"
+    }
