@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 
 import API from "../../services/api"
 
+import toast from "react-hot-toast"
+
 export default function CartPage() {
 
   const [cart, setCart] = useState([])
@@ -25,6 +27,8 @@ export default function CartPage() {
     } catch (error) {
 
       console.log(error)
+
+      toast.error("Failed to load cart")
     }
   }
 
@@ -36,11 +40,36 @@ export default function CartPage() {
         `/cart/remove/${cartId}`
       )
 
+      toast.success("Item removed")
+
       fetchCart()
 
     } catch (error) {
 
       console.log(error)
+
+      toast.error("Failed to remove item")
+    }
+  }
+
+  const updateQuantity = async (
+    cartId: number,
+    quantity: number
+  ) => {
+
+    try {
+
+      await API.put(
+        `/cart/update/${cartId}?quantity=${quantity}`
+      )
+
+      fetchCart()
+
+    } catch (error) {
+
+      console.log(error)
+
+      toast.error("Failed to update quantity")
     }
   }
 
@@ -52,7 +81,7 @@ export default function CartPage() {
         "/orders/checkout"
       )
 
-      alert(
+      toast.success(
         `Order placed! Total ₹ ${response.data.total_price}`
       )
 
@@ -62,7 +91,7 @@ export default function CartPage() {
 
       console.log(error)
 
-      alert("Checkout failed")
+      toast.error("Checkout failed")
     }
   }
 
@@ -99,11 +128,39 @@ export default function CartPage() {
               {item.product.name}
             </h2>
 
-            <p className="mt-2">
-              Quantity: {item.quantity}
-            </p>
+            <div className="flex items-center gap-4 mt-3">
 
-            <p className="mt-2 font-bold text-xl">
+              <button
+                onClick={() =>
+                  updateQuantity(
+                    item.id,
+                    item.quantity - 1
+                  )
+                }
+                className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+              >
+                -
+              </button>
+
+              <p>
+                Quantity: {item.quantity}
+              </p>
+
+              <button
+                onClick={() =>
+                  updateQuantity(
+                    item.id,
+                    item.quantity + 1
+                  )
+                }
+                className="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400"
+              >
+                +
+              </button>
+
+            </div>
+
+            <p className="mt-3 font-bold text-xl">
               ₹ {item.product.price}
             </p>
 

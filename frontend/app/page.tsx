@@ -1,14 +1,20 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
 import Link from "next/link"
+
+import toast from "react-hot-toast"
 
 import API from "../services/api"
 
 export default function Home() {
 
   const [products, setProducts] = useState([])
+
   const [search, setSearch] = useState("")
+
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
 
@@ -20,14 +26,21 @@ export default function Home() {
 
     try {
 
+      setLoading(true)
+
       const response = await API.get("/products")
 
       setProducts(response.data)
+
+      setLoading(false)
 
     } catch (error) {
 
       console.log(error)
 
+      toast.error("Failed to load products")
+
+      setLoading(false)
     }
   }
 
@@ -40,29 +53,45 @@ export default function Home() {
         quantity: 1
       })
 
-      alert("Added To Cart!")
+      toast.success("Added To Cart!")
 
     } catch (error) {
 
       console.log(error)
 
-      alert("Please login first")
+      toast.error("Please login first")
     }
   }
+
   const filteredProducts = products.filter(
-  (product: any) =>
-    product.name
-      .toLowerCase()
-      .includes(search.toLowerCase())
-)
+    (product: any) =>
+      product.name
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  )
+
+  if (loading) {
+
+    return (
+
+      <div className="p-10">
+
+        <h1 className="text-3xl font-bold">
+          Loading products...
+        </h1>
+
+      </div>
+    )
+  }
 
   return (
 
     <div className="p-10">
 
       <h1 className="text-4xl font-bold mb-10">
-        Everything Store
+        E-Commerce Store
       </h1>
+
       <input
         type="text"
         placeholder="Search products..."

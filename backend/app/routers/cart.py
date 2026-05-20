@@ -105,3 +105,36 @@ def remove_from_cart(
     return {
         "message": "Item removed from cart"
     }
+
+@router.put("/update/{cart_id}")
+def update_cart_quantity(
+    cart_id: int,
+    quantity: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+
+    cart_item = db.query(Cart).filter(
+        Cart.id == cart_id,
+        Cart.user_id == current_user.id
+    ).first()
+
+    if not cart_item:
+        raise HTTPException(
+            status_code=404,
+            detail="Cart item not found"
+        )
+
+    if quantity <= 0:
+
+        db.delete(cart_item)
+
+    else:
+
+        cart_item.quantity = quantity
+
+    db.commit()
+
+    return {
+        "message": "Cart updated"
+    }
