@@ -53,7 +53,7 @@ export default function Home() {
         quantity: 1
       })
 
-      toast.success("Added To Cart!")
+      toast.success("CARTIL ITTUUU!")
 
     } catch (error) {
 
@@ -89,7 +89,7 @@ export default function Home() {
     <div className="p-10">
 
       <h1 className="text-4xl font-bold mb-10">
-        Everything Store
+        ELLAAM Kittum IVDE
       </h1>
 
       <input

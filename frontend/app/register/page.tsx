@@ -6,7 +6,10 @@ import API from "../../services/api"
 
 import toast from "react-hot-toast"
 
-export default function LoginPage() {
+export default function RegisterPage() {
+
+  const [username, setUsername] =
+    useState("")
 
   const [email, setEmail] =
     useState("")
@@ -14,72 +17,38 @@ export default function LoginPage() {
   const [password, setPassword] =
     useState("")
 
-  const login = async () => {
+  const register = async () => {
 
     try {
 
-      const formData = new FormData()
+      await API.post(
+        "/auth/register",
+        {
 
-      formData.append(
-        "username",
-        email
-      )
-
-      formData.append(
-        "password",
-        password
-      )
-
-      const response =
-        await API.post(
-          "/auth/login",
-          formData
-        )
-
-      const token =
-        response.data.access_token
-
-      localStorage.setItem(
-        "token",
-        token
-      )
-
-      const profileResponse =
-        await API.get(
-          "/profile",
-          {
-
-            headers: {
-
-              Authorization:
-                `Bearer ${token}`
-            }
-          }
-        )
-
-      localStorage.setItem(
-        "user",
-        JSON.stringify(
-          profileResponse.data
-        )
+          username,
+          email,
+          password
+        }
       )
 
       toast.success(
-        "SWAAAGATHAMMM!"
+        "Registration successful!"
       )
 
       setTimeout(() => {
 
-        window.location.href = "/"
+        window.location.href = "/login"
 
       }, 1500)
-
-    } catch (error) {
+    } catch (error: any) {
 
       console.log(error)
 
       toast.error(
-        "Login failed"
+
+        error.response?.data?.detail ||
+
+        "Registration failed"
       )
     }
   }
@@ -89,10 +58,20 @@ export default function LoginPage() {
     <div className="p-10 max-w-md mx-auto">
 
       <h1 className="text-4xl font-bold mb-8">
-        Login
+        Register
       </h1>
 
       <div className="flex flex-col gap-4">
+
+        <input
+          placeholder="Username"
+          className="border p-3 rounded"
+          onChange={(e) =>
+            setUsername(
+              e.target.value
+            )
+          }
+        />
 
         <input
           type="email"
@@ -117,10 +96,10 @@ export default function LoginPage() {
         />
 
         <button
-          onClick={login}
+          onClick={register}
           className="bg-black text-white p-3 rounded"
         >
-          Login
+          Register
         </button>
 
       </div>

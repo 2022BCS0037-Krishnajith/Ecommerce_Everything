@@ -51,7 +51,7 @@ export default function Navbar() {
     <nav className="flex justify-between items-center p-4 border-b">
 
       <h1 className="text-2xl font-bold">
-        E-Commerce
+        Ellaaam Kittum IVDE
       </h1>
 
       <div className="flex gap-6 items-center">
@@ -64,11 +64,11 @@ export default function Navbar() {
 
           <>
             <Link href="/cart">
-              Cart
+              Cartil Ullath
             </Link>
 
             <Link href="/orders">
-              Orders
+              Medicha Saanangal
             </Link>
           </>
         )}

@@ -40,7 +40,7 @@ export default function CartPage() {
         `/cart/remove/${cartId}`
       )
 
-      toast.success("Item removed")
+      toast.success("OZHIVAAKII")
 
       fetchCart()
 
@@ -82,7 +82,7 @@ export default function CartPage() {
       )
 
       toast.success(
-        `Order placed! Total ₹ ${response.data.total_price}`
+        `NOKKI IRUNNO IPPO KITTUM! Total ₹ ${response.data.total_price}`
       )
 
       fetchCart()

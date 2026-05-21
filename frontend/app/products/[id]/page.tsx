@@ -43,7 +43,7 @@ export default function ProductDetailPage() {
         quantity: 1
       })
 
-      alert("Added to cart!")
+      alert("CARTL ITTUUU!")
 
     } catch (error) {
 
