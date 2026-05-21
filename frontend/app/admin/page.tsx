@@ -73,13 +73,13 @@ export default function AdminPage() {
 
     formData.append(
       "upload_preset",
-      "YOUR_UPLOAD_PRESET"
+      "Everything_store_upload"
     )
 
     try {
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
+        "https://api.cloudinary.com/v1_1/dzyguukya/image/upload",
         formData
       )
 
