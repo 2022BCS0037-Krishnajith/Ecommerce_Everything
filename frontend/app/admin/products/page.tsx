@@ -2,16 +2,43 @@
 
 import { useEffect, useState } from "react"
 
+import Link from "next/link"
+
 import API from "../../../services/api"
 
 import toast from "react-hot-toast"
-import Link from "next/link"
 
 export default function AdminProductsPage() {
 
-  const [products, setProducts] = useState([])
+  const [authorized, setAuthorized] =
+    useState(false)
+
+  const [products, setProducts] =
+    useState([])
 
   useEffect(() => {
+
+    const user =
+      localStorage.getItem("user")
+
+    if (!user) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    const parsedUser =
+      JSON.parse(user)
+
+    if (!parsedUser.is_admin) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    setAuthorized(true)
 
     fetchProducts()
 
@@ -21,7 +48,8 @@ export default function AdminProductsPage() {
 
     try {
 
-      const response = await API.get("/products")
+      const response =
+        await API.get("/products")
 
       setProducts(response.data)
 
@@ -41,7 +69,9 @@ export default function AdminProductsPage() {
         `/products/${productId}`
       )
 
-      toast.success("Product deleted")
+      toast.success(
+        "Product deleted"
+      )
 
       fetchProducts()
 
@@ -51,6 +81,11 @@ export default function AdminProductsPage() {
 
       toast.error("Delete failed")
     }
+  }
+
+  if (!authorized) {
+
+    return null
   }
 
   return (
@@ -84,15 +119,18 @@ export default function AdminProductsPage() {
               <p className="mt-2">
                 ₹ {product.price}
               </p>
-            <Link href={`/admin/edit/${product.id}`}>
 
-              <button
-                className="mt-4 mr-3 bg-blue-500 text-white px-4 py-2 rounded"
+              <Link
+                href={`/admin/edit/${product.id}`}
               >
-                Edit
-             </button>
 
-            </Link>
+                <button
+                  className="mt-4 mr-3 bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Edit
+                </button>
+
+              </Link>
 
               <button
                 onClick={() =>

@@ -14,21 +14,50 @@ export default function EditProductPage() {
 
   const params = useParams()
 
+  const [authorized, setAuthorized] =
+    useState(false)
+
   const [name, setName] = useState("")
 
-  const [description, setDescription] = useState("")
+  const [description, setDescription] =
+    useState("")
 
   const [price, setPrice] = useState("")
 
   const [stock, setStock] = useState("")
 
-  const [category, setCategory] = useState("")
+  const [category, setCategory] =
+    useState("")
 
-  const [imageUrl, setImageUrl] = useState("")
+  const [imageUrl, setImageUrl] =
+    useState("")
 
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] =
+    useState(false)
 
   useEffect(() => {
+
+    const user =
+      localStorage.getItem("user")
+
+    if (!user) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    const parsedUser =
+      JSON.parse(user)
+
+    if (!parsedUser.is_admin) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    setAuthorized(true)
 
     fetchProduct()
 
@@ -38,15 +67,19 @@ export default function EditProductPage() {
 
     try {
 
-      const response = await API.get(
-        `/products/${params.id}`
-      )
+      const response =
+        await API.get(
+          `/products/${params.id}`
+        )
 
-      const product = response.data
+      const product =
+        response.data
 
       setName(product.name)
 
-      setDescription(product.description)
+      setDescription(
+        product.description
+      )
 
       setPrice(product.price)
 
@@ -54,13 +87,17 @@ export default function EditProductPage() {
 
       setCategory(product.category)
 
-      setImageUrl(product.image_url)
+      setImageUrl(
+        product.image_url
+      )
 
     } catch (error) {
 
       console.log(error)
 
-      toast.error("Failed to load product")
+      toast.error(
+        "Failed to load product"
+      )
     }
   }
 
@@ -80,13 +117,13 @@ export default function EditProductPage() {
 
     formData.append(
       "upload_preset",
-      "Everything_store_upload"
+      "YOUR_UPLOAD_PRESET"
     )
 
     try {
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dzyguukya/image/upload",
+        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
         formData
       )
 
@@ -112,18 +149,23 @@ export default function EditProductPage() {
 
     try {
 
-      await API.put(`/products/${params.id}`, {
+      await API.put(
+        `/products/${params.id}`,
+        {
 
-        name,
-        description,
-        price: Number(price),
-        stock: Number(stock),
-        category,
-        image_url: imageUrl
+          name,
+          description,
+          price: Number(price),
+          stock: Number(stock),
+          category,
+          image_url: imageUrl
 
-      })
+        }
+      )
 
-      toast.success("Product updated!")
+      toast.success(
+        "Product updated!"
+      )
 
     } catch (error) {
 
@@ -131,6 +173,11 @@ export default function EditProductPage() {
 
       toast.error("Update failed")
     }
+  }
+
+  if (!authorized) {
+
+    return null
   }
 
   return (
@@ -145,7 +192,9 @@ export default function EditProductPage() {
 
         <input
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) =>
+            setName(e.target.value)
+          }
           className="border p-3 rounded"
           placeholder="Product Name"
         />
@@ -161,21 +210,27 @@ export default function EditProductPage() {
 
         <input
           value={price}
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) =>
+            setPrice(e.target.value)
+          }
           className="border p-3 rounded"
           placeholder="Price"
         />
 
         <input
           value={stock}
-          onChange={(e) => setStock(e.target.value)}
+          onChange={(e) =>
+            setStock(e.target.value)
+          }
           className="border p-3 rounded"
           placeholder="Stock"
         />
 
         <input
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) =>
+            setCategory(e.target.value)
+          }
           className="border p-3 rounded"
           placeholder="Category"
         />
@@ -203,7 +258,7 @@ export default function EditProductPage() {
 
         <button
           onClick={updateProduct}
-          className="bg-black text-white p-3 rounded hover:bg-gray-800 transition"
+          className="bg-black text-white p-3 rounded"
         >
           Update Product
         </button>

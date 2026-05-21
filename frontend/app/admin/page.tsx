@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import axios from "axios"
 
@@ -10,19 +10,52 @@ import toast from "react-hot-toast"
 
 export default function AdminPage() {
 
+  const [authorized, setAuthorized] =
+    useState(false)
+
   const [name, setName] = useState("")
 
-  const [description, setDescription] = useState("")
+  const [description, setDescription] =
+    useState("")
 
   const [price, setPrice] = useState("")
 
   const [stock, setStock] = useState("")
 
-  const [category, setCategory] = useState("")
+  const [category, setCategory] =
+    useState("")
 
-  const [imageUrl, setImageUrl] = useState("")
+  const [imageUrl, setImageUrl] =
+    useState("")
 
-  const [uploading, setUploading] = useState(false)
+  const [uploading, setUploading] =
+    useState(false)
+
+  useEffect(() => {
+
+    const user =
+      localStorage.getItem("user")
+
+    if (!user) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    const parsedUser =
+      JSON.parse(user)
+
+    if (!parsedUser.is_admin) {
+
+      window.location.href = "/"
+
+      return
+    }
+
+    setAuthorized(true)
+
+  }, [])
 
   const uploadImage = async (
     e: any
@@ -40,13 +73,13 @@ export default function AdminPage() {
 
     formData.append(
       "upload_preset",
-      "Everything_store_upload"
+      "YOUR_UPLOAD_PRESET"
     )
 
     try {
 
       const response = await axios.post(
-        "https://api.cloudinary.com/v1_1/dzyguukya/image/upload",
+        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload",
         formData
       )
 
@@ -72,7 +105,9 @@ export default function AdminPage() {
 
     if (!imageUrl) {
 
-      toast.error("Please upload an image first")
+      toast.error(
+        "Please upload image first"
+      )
 
       return
     }
@@ -103,8 +138,15 @@ export default function AdminPage() {
 
       console.log(error)
 
-      toast.error("Failed to create product")
+      toast.error(
+        "Failed to create product"
+      )
     }
+  }
+
+  if (!authorized) {
+
+    return null
   }
 
   return (
@@ -121,7 +163,9 @@ export default function AdminPage() {
           placeholder="Product Name"
           value={name}
           className="border p-3 rounded"
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) =>
+            setName(e.target.value)
+          }
         />
 
         <textarea
@@ -137,21 +181,27 @@ export default function AdminPage() {
           placeholder="Price"
           value={price}
           className="border p-3 rounded"
-          onChange={(e) => setPrice(e.target.value)}
+          onChange={(e) =>
+            setPrice(e.target.value)
+          }
         />
 
         <input
           placeholder="Stock"
           value={stock}
           className="border p-3 rounded"
-          onChange={(e) => setStock(e.target.value)}
+          onChange={(e) =>
+            setStock(e.target.value)
+          }
         />
 
         <input
           placeholder="Category"
           value={category}
           className="border p-3 rounded"
-          onChange={(e) => setCategory(e.target.value)}
+          onChange={(e) =>
+            setCategory(e.target.value)
+          }
         />
 
         <input
@@ -177,7 +227,7 @@ export default function AdminPage() {
 
         <button
           onClick={createProduct}
-          className="bg-black text-white p-3 rounded hover:bg-gray-800 transition"
+          className="bg-black text-white p-3 rounded"
         >
           Create Product
         </button>

@@ -27,6 +27,21 @@ export default function LoginPage() {
         response.data.access_token
       )
 
+      const profileResponse =
+        await API.get("/auth/profile", {
+
+          headers: {
+
+            Authorization:
+              `Bearer ${response.data.access_token}`
+          }
+      })
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(profileResponse.data)
+      ) 
+
       alert("Login successful!")
 
     } catch (error) {
