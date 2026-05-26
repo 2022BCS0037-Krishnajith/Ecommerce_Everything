@@ -100,3 +100,26 @@ def get_orders(
     ).all()
 
     return orders
+
+@router.get("/all")
+def get_all_orders(
+
+    db: Session = Depends(get_db),
+
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+
+    if not current_user.is_admin:
+
+        raise HTTPException(
+
+            status_code=403,
+
+            detail="Admins only"
+        )
+
+    orders = db.query(Order).all()
+
+    return orders
