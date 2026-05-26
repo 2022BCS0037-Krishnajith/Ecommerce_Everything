@@ -55,9 +55,53 @@ export default function AdminOrdersPage() {
               User ID: {order.user_id}
             </p>
 
-            <p className="mt-2">
+            <p className="mt-2 font-bold">
               Total: ₹ {order.total_price}
             </p>
+
+            <div className="mt-4">
+
+              <h3 className="font-bold text-lg">
+                Products
+              </h3>
+
+              <div className="mt-2 flex flex-col gap-2">
+
+                {order.items.map(
+                  (
+                    item: any,
+                    index: number
+                  ) => (
+
+                  <div
+                    key={index}
+                    className="border p-3 rounded"
+                  >
+
+                    <p>
+                      Product:
+                      {" "}
+                      {item.product_name}
+                    </p>
+
+                    <p>
+                      Quantity:
+                      {" "}
+                      {item.quantity}
+                    </p>
+
+                    <p>
+                      Price:
+                      {" "}
+                      ₹ {item.price}
+                    </p>
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div>
 
           </div>
         ))}
