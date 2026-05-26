@@ -122,4 +122,37 @@ def get_all_orders(
 
     orders = db.query(Order).all()
 
-    return orders
+    result = []
+
+    for order in orders:
+
+        items = []
+
+        for item in order.items:
+
+            items.append({
+
+                "product_name":
+                    item.product.name,
+
+                "quantity":
+                    item.quantity,
+
+                "price":
+                    item.product.price
+            })
+
+        result.append({
+
+            "id": order.id,
+
+            "user_id":
+                order.user_id,
+
+            "total_price":
+                order.total_price,
+
+            "items": items
+        })
+
+    return result
