@@ -83,6 +83,9 @@ export default function Navbar() {
             <Link href="/admin/products">
               Manage Products
             </Link>
+            <Link href="/admin/orders">
+              Orders
+            </Link>
           </>
         )}
 
